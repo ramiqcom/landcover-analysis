@@ -8,6 +8,11 @@ type SelectProps = {
   visible?: boolean;
 };
 
+/**
+ * Select component
+ * @param param0
+ * @returns
+ */
 export function Select({
   options,
   value,

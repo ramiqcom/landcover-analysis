@@ -137,7 +137,8 @@ button:disabled {
 .float-panel {
   background-color: #181a1b;
   padding: 5%;
-  width: 35vh;
+  width: 45vh;
+  max-height: 90vh;
 }
 
 .title {
@@ -157,4 +158,7 @@ button:disabled {
 
 #legend {
   margin-top: 1vh;
+  overflow-y: auto;
+  max-height: 60vh;
+  font-size: smaller;
 }

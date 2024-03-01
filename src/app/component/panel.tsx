@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import lc from '../data/lc.json';
 import years from '../data/year.json';
 import { Context, GlobalContext, Options } from '../module/global';
 import { Select } from './input';
@@ -37,6 +38,36 @@ function Panel() {
           onChange={(value) => setYear(value.value)}
         />
       </div>
+
+      <Legend />
+    </div>
+  );
+}
+
+function Legend() {
+  // Label and palette of the land cover
+  const { names, palette } = lc;
+
+  // Legend div
+  const legends = names.map((name, index) => {
+    return (
+      <div key={index} style={{ width: '100%', height: '4vh' }} className='flexible small-gap'>
+        <div
+          style={{
+            width: '3vh',
+            height: '100%',
+            border: 'thin solid white',
+            backgroundColor: `#${palette[index]}`,
+          }}
+        />
+        {name}
+      </div>
+    );
+  });
+
+  return (
+    <div className='flexible vertical small-gap' id='legend'>
+      {legends}
     </div>
   );
 }
