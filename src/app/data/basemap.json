@@ -1,0 +1,7 @@
+[
+	{ "label": "Alidade Smooth Dark", "value": "https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json" },
+	{ "label": "Alidade Smooth", "value": "https://tiles.stadiamaps.com/styles/alidade_smooth.json" },
+	{ "label": "Alidade Satellite", "value": "https://tiles.stadiamaps.com/styles/alidade_satellite.json" },
+	{ "label": "Stadia Outdoors", "value": "https://tiles.stadiamaps.com/styles/outdoors.json" },
+	{ "label": "OSM Bright", "value": "https://tiles.stadiamaps.com/styles/osm_bright.json" }
+]
