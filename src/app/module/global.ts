@@ -1,3 +1,4 @@
+import { createContext } from 'react';
 import { Map } from 'maplibre-gl';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -9,3 +10,5 @@ export type GlobalContext = {
   map: Map | undefined;
   setMap: Dispatch<SetStateAction<Map | undefined>>;
 };
+
+export const Context = createContext<GlobalContext | {}>({});

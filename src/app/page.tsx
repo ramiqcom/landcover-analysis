@@ -1,10 +1,15 @@
 'use client';
+
 import { Map } from 'maplibre-gl';
 import { useState } from 'react';
 import MapCanvas from './component/map';
 import basemaps from './data/basemap.json';
-import { Context } from './module/context';
+import { Context, GlobalContext } from './module/global';
 
+/**
+ * Main app component
+ * @returns
+ */
 export default function Home() {
   // Basemap of choice
   const [basemap, setBasemap] = useState(basemaps[0]);
@@ -13,7 +18,7 @@ export default function Home() {
   const [map, setMap] = useState<Map>();
 
   // Context of all states
-  const contextDict = { basemap, setBasemap, map, setMap };
+  const contextDict: GlobalContext = { basemap, setBasemap, map, setMap };
 
   return (
     <>
@@ -27,6 +32,7 @@ export default function Home() {
 /**
  * Showing loading component
  * Loading component
+ * @returns
  */
 function Loading() {
   return (
