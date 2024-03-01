@@ -12,7 +12,7 @@ export type GlobalContext = {
   setMap: Dispatch<SetStateAction<Map | undefined>>;
   tiles: Record<string, string>;
   setTiles: Dispatch<SetStateAction<Record<string, string>>>;
-  tile: string,
+  tile: string;
   setTile: Dispatch<SetStateAction<string>>;
   year: number;
   setYear: Dispatch<SetStateAction<number>>;

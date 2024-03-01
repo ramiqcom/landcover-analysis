@@ -3,6 +3,10 @@ import { useContext, useEffect } from 'react';
 import '../../../node_modules/maplibre-gl/dist/maplibre-gl.css';
 import { Context, GlobalContext, LCResponseBody } from '../module/global';
 
+/**
+ * Map div
+ * @returns
+ */
 export default function MapCanvas() {
   // States from context
   const { basemap, map, setMap, tiles, setTiles, year, tile, setTile } = useContext(
@@ -68,6 +72,7 @@ export default function MapCanvas() {
 
   /**
    * Async function to fetch land cover tileurl
+   * @returns
    */
   async function getTile(): Promise<string> {
     let tile: string;

@@ -3,6 +3,10 @@ import years from '../data/year.json';
 import { Context, GlobalContext, Options } from '../module/global';
 import { Select } from './input';
 
+/**
+ * Transparent background
+ * @returns
+ */
 export default function Float() {
   return (
     <div id='float' className='flexible vertical'>
@@ -11,6 +15,10 @@ export default function Float() {
   );
 }
 
+/**
+ * Panel that do the analysis
+ * @returns
+ */
 function Panel() {
   const { year, setYear } = useContext(Context) as GlobalContext;
   const options = years
