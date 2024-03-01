@@ -9,6 +9,7 @@ body {
   font-size: medium;
   background-color: #181a1b;
   color: #e8e6e3;
+  flex-direction: row-reverse;
 }
 
 input[type='date'] {
@@ -41,6 +42,7 @@ select {
   color: #e8e6e3;
   border: none;
   font-size: medium;
+  text-align: center;
 }
 
 select:enabled:hover {
@@ -128,9 +130,8 @@ button:disabled {
 #float {
   z-index: 99999;
   position: absolute;
-  display: flex;
-  margin: 1%;
-  flex-direction: column;
+  margin-top: 2vh;
+  margin-right: 5vh;
 }
 
 .float-panel {
@@ -142,6 +143,7 @@ button:disabled {
 .title {
   font-size: large;
   font-weight: 700;
+  text-align: center;
 }
 
 #modal {

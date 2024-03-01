@@ -3,8 +3,9 @@
 import { Map } from 'maplibre-gl';
 import { useState } from 'react';
 import MapCanvas from './component/map';
+import Float from './component/panel';
 import basemaps from './data/basemap.json';
-import { Context, GlobalContext } from './module/global';
+import { Context } from './module/global';
 
 /**
  * Main app component
@@ -17,12 +18,33 @@ export default function Home() {
   // Map object
   const [map, setMap] = useState<Map>();
 
+  // Tile list
+  const [tiles, setTiles] = useState<Record<string, string>>({});
+
+  // Tile
+  const [tile, setTile] = useState<string | undefined>();
+
+  // Year
+  const [year, setYear] = useState<number>(2022);
+
   // Context of all states
-  const contextDict: GlobalContext = { basemap, setBasemap, map, setMap };
+  const contextDict = {
+    basemap,
+    setBasemap,
+    map,
+    setMap,
+    tiles,
+    setTiles,
+    year,
+    setYear,
+    tile,
+    setTile,
+  };
 
   return (
     <>
       <Context.Provider value={contextDict}>
+        <Float />
         <MapCanvas />
       </Context.Provider>
     </>
