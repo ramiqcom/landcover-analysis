@@ -1,3 +1,4 @@
+import { Geometry } from '@turf/turf';
 import { GeoJSON } from 'geojson';
 import { Map } from 'maplibre-gl';
 import { Dispatch, MutableRefObject, SetStateAction, createContext } from 'react';
@@ -30,6 +31,8 @@ export type GlobalContext = {
   modalRef: MutableRefObject<any>;
   lcDisabled: boolean;
   setLcDisabled: Dispatch<SetStateAction<boolean>>;
+  bounds: Geometry;
+  setBounds: Dispatch<SetStateAction<Geometry>>;
 };
 
 export type LCRequestBody = {
@@ -38,6 +41,16 @@ export type LCRequestBody = {
 
 export type LCResponseBody = {
   url: string | undefined;
+  message: string | undefined;
+};
+
+export type LCAnalyzeBody = {
+  geojson: GeoJSON;
+  bounds: Geometry;
+};
+
+export type LCAnalyzeResponse = {
+  data: Array<{ groups: Array<{ lc: number; area: number }> }>;
   message: string | undefined;
 };
 

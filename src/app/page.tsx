@@ -7,6 +7,7 @@ import MapCanvas from './component/map';
 import Float from './component/panel';
 import basemaps from './data/basemap.json';
 import { Context, PanelID } from './module/global';
+import { Geometry } from '@turf/turf';
 
 /**
  * Main app component
@@ -33,6 +34,9 @@ export default function Home() {
 
   // Geojson
   const [geojson, setGeojson] = useState<GeoJSON>();
+
+  // Geojson geometries/bound
+  const [bounds, setBounds] = useState<Geometry>();
 
   // Modal
   const [modalText, setModalText] = useState('');
@@ -72,6 +76,8 @@ export default function Home() {
     modalRef,
     lcDisabled,
     setLcDisabled,
+    bounds,
+    setBounds,
   };
 
   return (

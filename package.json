@@ -17,6 +17,7 @@
     "next": "14.1.0",
     "node-self": "^1.0.2",
     "react": "^18",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
     "reproject": "^1.2.7",
     "shpjs": "^4.0.4"

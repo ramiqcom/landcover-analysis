@@ -1,22 +1,32 @@
 import { kml } from '@tmcw/togeojson';
-import { FeatureCollection, area, bbox } from '@turf/turf';
+import { FeatureCollection, area, bbox, bboxPolygon, dissolve, flatten } from '@turf/turf';
 import epsg from 'epsg';
 import { GeoJSON } from 'geojson';
 import { GeoJSONSource, LngLatBoundsLike } from 'maplibre-gl';
 import { Dispatch, MutableRefObject, SetStateAction, useContext, useEffect, useState } from 'react';
 import { toWgs84 } from 'reproject';
 import shp from 'shpjs';
-import { Context, GlobalContext } from '../module/global';
+import { Context, GlobalContext, LCAnalyzeResponse } from '../module/global';
 import { setModal } from '../module/utils';
+import lc from '../data/lc.json';
 
 /**
  * Analysis panel
  * @returns
  */
 export default function Analysis() {
-  const { map, panel, geojson, setGeojson, vectorId, lcId, modalRef, setModalText } = useContext(
-    Context
-  ) as GlobalContext;
+  const {
+    map,
+    panel,
+    geojson,
+    setGeojson,
+    vectorId,
+    lcId,
+    modalRef,
+    setModalText,
+    setBounds,
+    bounds,
+  } = useContext(Context) as GlobalContext;
 
   const [showVector, setShowVector] = useState(true);
 
@@ -58,8 +68,11 @@ export default function Analysis() {
 
       // Zoom to geojson
       if (geojson && map.getSource(vectorId)) {
-        const bounds = bbox(geojson) as LngLatBoundsLike;
-        map.fitBounds(bounds);
+        const bounds = bbox(geojson);
+        map.fitBounds(bounds as LngLatBoundsLike);
+
+        const geometry = bboxPolygon(bounds).geometry;
+        setBounds(geometry);
       }
     }
   }, [geojson]);
@@ -98,6 +111,60 @@ export default function Analysis() {
           }}
         />
       </div>
+
+      <button
+        disabled={geojson ? false : true}
+        onClick={async () => {
+          // Flatten the polygon
+          const polygon = flatten(geojson as FeatureCollection);
+          const dissolved = dissolve(polygon);
+
+          const request = await fetch('/api/analyze', {
+            method: 'POST',
+            body: JSON.stringify({ geojson: dissolved, bounds }),
+            headers: {
+              'Content-type': 'application/json',
+            },
+          });
+
+          const { data, message }: LCAnalyzeResponse = await request.json();
+
+          if (!request.ok) {
+            throw new Error(message);
+					}
+
+					// LC datasets
+					const { values, names, palette } = lc;
+
+          // List years
+          const years = [1985, 1990, 2000, 2005, 2010, 2015, 2020];
+
+          // Group the data based on lc values to make it into a datasets for chart
+          const datasets = values.map((value, index) => {
+            const yearData = data.map((arr) => {
+              const filtered = arr.groups.filter((obj) => obj.lc == value);
+              return filtered.length ? filtered[0].area : 0;
+						});
+
+						const group = {
+              data: yearData,
+              backgroundColor: `#${palette[index]}80`,
+              borderColor: `#${palette[index]}80`,
+              label: names[index],
+              fill: true,
+            };
+
+            return group;
+					});
+
+					// Filtered data year
+					const filtered = datasets.filter((arr) => arr.data.reduce((x, y) => x + y));
+
+					// C
+        }}
+      >
+        Analyze land cover change
+      </button>
     </div>
   );
 }
