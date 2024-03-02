@@ -1,7 +1,10 @@
+import { GeoJSON } from 'geojson';
 import { Map } from 'maplibre-gl';
 import { Dispatch, SetStateAction, createContext } from 'react';
 
 export type Option = { label: string; value: any };
+
+export type PanelID = 'landcover' | 'analysis';
 
 export type Options = Array<Option>;
 
@@ -16,6 +19,12 @@ export type GlobalContext = {
   setTile: Dispatch<SetStateAction<string>>;
   year: number;
   setYear: Dispatch<SetStateAction<number>>;
+  panel: PanelID;
+  setPanel: Dispatch<SetStateAction<PanelID>>;
+  geojson: GeoJSON;
+  setGeojson: Dispatch<SetStateAction<GeoJSON>>;
+  lcId: string;
+  vectorId: string;
 };
 
 export type LCRequestBody = {

@@ -12,6 +12,23 @@ body {
   flex-direction: row-reverse;
 }
 
+input[type='file'] {
+  width: 100%;
+}
+
+input[type='file']::file-selector-button {
+  height: 3vh;
+  font-size: medium;
+  background-color: #363636;
+  border: none;
+  color: #e8e6e3;
+  width: 40%;
+}
+
+input[type='file']::file-selector-button:hover {
+  background-color: #6b6b6b;
+}
+
 input[type='date'] {
   background-color: #363636;
   color: #e8e6e3;
@@ -71,6 +88,15 @@ button:disabled {
   background-color: #181a1b;
   border: thin solid #666766;
   color: #666766;
+}
+
+.button-select {
+  width: 100%;
+}
+
+.button-select:disabled {
+  border: none;
+  color: #e8e6e3;
 }
 
 .flexible {

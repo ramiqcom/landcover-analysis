@@ -9,15 +9,12 @@ import { Context, GlobalContext, LCResponseBody } from '../module/global';
  */
 export default function MapCanvas() {
   // States from context
-  const { basemap, map, setMap, tiles, setTiles, year, tile, setTile } = useContext(
+  const { basemap, map, setMap, tiles, setTiles, year, tile, setTile, lcId } = useContext(
     Context
   ) as GlobalContext;
 
   // Name of div id as map canvas
   const mapId: string = 'map';
-
-  // Lc id name
-  const lcId: string = 'LC';
 
   // When html is rendered load map
   useEffect(() => {
@@ -50,10 +47,6 @@ export default function MapCanvas() {
         maxzoom: 22,
       });
     });
-
-    return () => {
-      setMap(undefined);
-    };
   }, []);
 
   // When year/tiles change do something

@@ -1,11 +1,12 @@
 'use client';
 
+import { GeoJSON } from 'geojson';
 import { Map } from 'maplibre-gl';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import MapCanvas from './component/map';
 import Float from './component/panel';
 import basemaps from './data/basemap.json';
-import { Context } from './module/global';
+import { Context, PanelID } from './module/global';
 
 /**
  * Main app component
@@ -27,6 +28,18 @@ export default function Home() {
   // Year
   const [year, setYear] = useState<number>(2022);
 
+  // Land cover panel
+  const [panel, setPanel] = useState<PanelID>('landcover');
+
+  // Geojson
+  const [geojson, setGeojson] = useState<GeoJSON>();
+
+  // Lc id name
+  const lcId: string = 'LC';
+
+  // Vector id
+  const vectorId: string = 'vector';
+
   // Context of all states
   const contextDict = {
     basemap,
@@ -39,13 +52,21 @@ export default function Home() {
     setYear,
     tile,
     setTile,
+    panel,
+    setPanel,
+    geojson,
+    setGeojson,
+    lcId,
+    vectorId,
   };
 
   return (
     <>
       <Context.Provider value={contextDict}>
         <Float />
-        <MapCanvas />
+        <Suspense fallback={<Loading />}>
+          <MapCanvas />
+        </Suspense>
       </Context.Provider>
     </>
   );
