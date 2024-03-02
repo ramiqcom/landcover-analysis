@@ -2,6 +2,7 @@ import { Map, RasterTileSource } from 'maplibre-gl';
 import { useContext, useEffect } from 'react';
 import '../../../node_modules/maplibre-gl/dist/maplibre-gl.css';
 import { Context, GlobalContext, LCResponseBody } from '../module/global';
+import { setModal } from '../module/utils';
 
 /**
  * Map div
@@ -9,9 +10,20 @@ import { Context, GlobalContext, LCResponseBody } from '../module/global';
  */
 export default function MapCanvas() {
   // States from context
-  const { basemap, map, setMap, tiles, setTiles, year, tile, setTile, lcId } = useContext(
-    Context
-  ) as GlobalContext;
+  const {
+    basemap,
+    map,
+    setMap,
+    tiles,
+    setTiles,
+    year,
+    tile,
+    setTile,
+    lcId,
+    setLcDisabled,
+    modalRef,
+    setModalText,
+  } = useContext(Context) as GlobalContext;
 
   // Name of div id as map canvas
   const mapId: string = 'map';
@@ -31,6 +43,9 @@ export default function MapCanvas() {
 
     // When map is loaded do something
     map.on('load', async () => {
+      // Show map loading
+      setModal('Loading land cover...', modalRef, setModalText);
+
       const tile = await getTile();
 
       map.addSource(lcId, {
@@ -46,11 +61,20 @@ export default function MapCanvas() {
         minzoom: 0,
         maxzoom: 22,
       });
+
+      // enable lc again
+      setLcDisabled(false);
+
+      // Hide map loading
+      setModal('', modalRef, setModalText, false);
     });
   }, []);
 
   // When year/tiles change do something
   useEffect(() => {
+    // Disabled lc option when change year
+    setLcDisabled(true);
+
     // Load new tile
     getTile();
   }, [year, tiles]);
@@ -60,6 +84,9 @@ export default function MapCanvas() {
     if (map && map.getSource(lcId)) {
       const source = map.getSource(lcId) as RasterTileSource;
       source.setTiles([tile]);
+
+      // Enable lc again
+      setLcDisabled(false);
     }
   }, [tile]);
 
@@ -97,7 +124,6 @@ export default function MapCanvas() {
 
     // Set the main tile
     setTile(tile);
-
     return tile;
   }
 

@@ -2,7 +2,7 @@
 
 import { GeoJSON } from 'geojson';
 import { Map } from 'maplibre-gl';
-import { Suspense, useState } from 'react';
+import { Suspense, useRef, useState } from 'react';
 import MapCanvas from './component/map';
 import Float from './component/panel';
 import basemaps from './data/basemap.json';
@@ -34,6 +34,15 @@ export default function Home() {
   // Geojson
   const [geojson, setGeojson] = useState<GeoJSON>();
 
+  // Modal
+  const [modalText, setModalText] = useState('');
+
+  // LC select
+  const [lcDisabled, setLcDisabled] = useState(true);
+
+  // Modal ref
+  const modalRef = useRef();
+
   // Lc id name
   const lcId: string = 'LC';
 
@@ -58,11 +67,19 @@ export default function Home() {
     setGeojson,
     lcId,
     vectorId,
+    modalText,
+    setModalText,
+    modalRef,
+    lcDisabled,
+    setLcDisabled,
   };
 
   return (
     <>
       <Context.Provider value={contextDict}>
+        <dialog id='modal' ref={modalRef}>
+          {modalText}
+        </dialog>
         <Float />
         <Suspense fallback={<Loading />}>
           <MapCanvas />

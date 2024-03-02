@@ -1,6 +1,6 @@
 import { GeoJSON } from 'geojson';
 import { Map } from 'maplibre-gl';
-import { Dispatch, SetStateAction, createContext } from 'react';
+import { Dispatch, MutableRefObject, SetStateAction, createContext } from 'react';
 
 export type Option = { label: string; value: any };
 
@@ -25,6 +25,11 @@ export type GlobalContext = {
   setGeojson: Dispatch<SetStateAction<GeoJSON>>;
   lcId: string;
   vectorId: string;
+  modalText: string;
+  setModalText: Dispatch<SetStateAction<string>>;
+  modalRef: MutableRefObject<any>;
+  lcDisabled: boolean;
+  setLcDisabled: Dispatch<SetStateAction<boolean>>;
 };
 
 export type LCRequestBody = {

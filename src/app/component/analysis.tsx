@@ -3,27 +3,33 @@ import { FeatureCollection, area, bbox } from '@turf/turf';
 import epsg from 'epsg';
 import { GeoJSON } from 'geojson';
 import { GeoJSONSource, LngLatBoundsLike } from 'maplibre-gl';
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { Dispatch, MutableRefObject, SetStateAction, useContext, useEffect, useState } from 'react';
 import { toWgs84 } from 'reproject';
 import shp from 'shpjs';
 import { Context, GlobalContext } from '../module/global';
+import { setModal } from '../module/utils';
 
 /**
  * Analysis panel
  * @returns
  */
 export default function Analysis() {
-  const { map, panel, geojson, setGeojson, vectorId, lcId } = useContext(Context) as GlobalContext;
+  const { map, panel, geojson, setGeojson, vectorId, lcId, modalRef, setModalText } = useContext(
+    Context
+  ) as GlobalContext;
 
   const [showVector, setShowVector] = useState(true);
 
   // Allow to drop file to map
   useEffect(() => {
-    window.ondragover = (e: DragEvent): void => e.preventDefault();
+    window.ondragover = (e: DragEvent): void => {
+      e.preventDefault();
+    };
+
     window.ondrop = async (e: DragEvent): Promise<void> => {
       e.preventDefault();
       const file = e.dataTransfer.files[0];
-      await loadGeojson(file, setGeojson);
+      await loadGeojson(file, setGeojson, modalRef, setModalText);
     };
   }, [map]);
 
@@ -88,7 +94,7 @@ export default function Analysis() {
           type='file'
           accept='.zip, .geojson, .json, .kml, .kmz'
           onChange={async (e) => {
-            await loadGeojson(e.target.files[0], setGeojson);
+            await loadGeojson(e.target.files[0], setGeojson, modalRef, setModalText);
           }}
         />
       </div>
@@ -103,45 +109,58 @@ export default function Analysis() {
  */
 async function loadGeojson(
   file: File,
-  setGeojson: Dispatch<SetStateAction<GeoJSON>>
+  setGeojson: Dispatch<SetStateAction<GeoJSON>>,
+  modalRef: MutableRefObject<any>,
+  setModalText: Dispatch<SetStateAction<string>>
 ): Promise<void> {
-  const format = file.name.split('.').at(-1).toLowerCase();
+  try {
+    // Show processing screen
+    setModal('Processing data...', modalRef, setModalText);
 
-  let geojson: GeoJSON;
+    const format = file.name.split('.').at(-1).toLowerCase();
 
-  // Conditional format
-  switch (format) {
-    case 'geojson':
-    case 'json': {
-      const parsed = JSON.parse(await file.text());
-      const reprojected = toWgs84(parsed, undefined, epsg);
-      geojson = reprojected;
-      break;
+    let geojson: GeoJSON;
+
+    // Conditional format
+    switch (format) {
+      case 'geojson':
+      case 'json': {
+        const parsed = JSON.parse(await file.text());
+        const reprojected = toWgs84(parsed, undefined, epsg);
+        geojson = reprojected;
+        break;
+      }
+      case 'zip': {
+        const parsed = await shp(await file.arrayBuffer());
+        geojson = parsed;
+        break;
+      }
+      case 'kml':
+      case 'kmz': {
+        const parsed = kml(new DOMParser().parseFromString(await file.text(), 'application/xml'));
+        geojson = parsed;
+        break;
+      }
+      default: {
+        throw new Error(`Format ${format} is not supported`);
+      }
     }
-    case 'zip': {
-      const parsed = await shp(await file.arrayBuffer());
-      geojson = parsed;
-      break;
+
+    // Check geojson area
+    const areaGeojson = area(geojson as FeatureCollection) / 1e6;
+
+    // If area too big throw error
+    if (areaGeojson > 1e6) {
+      throw new Error(`Data area is ${areaGeojson}. Too big. Make it under 1 million km2`);
     }
-    case 'kml':
-    case 'kmz': {
-      const parsed = kml(new DOMParser().parseFromString(await file.text(), 'application/xml'));
-      geojson = parsed;
-      break;
-    }
-    default: {
-      throw new Error(`Format ${format} is not supported`);
-    }
+
+    // Set geojson
+    setGeojson(geojson);
+
+    // Close it
+    setModal('', modalRef, setModalText, false);
+  } catch ({ message }) {
+    // Show error
+    setModal(message as string, modalRef, setModalText, false, true);
   }
-
-  // Check geojson area
-  const areaGeojson = area(geojson as FeatureCollection) / 1e6;
-
-  // If area too big throw error
-  if (areaGeojson > 1e6) {
-    throw new Error(`Data area is ${areaGeojson}. Too big. Make it under 1 million km2`);
-  }
-
-  // Set geojson
-  setGeojson(geojson);
 }

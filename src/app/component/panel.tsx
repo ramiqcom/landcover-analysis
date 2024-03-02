@@ -52,7 +52,7 @@ function Panel() {
 }
 
 function View() {
-  const { year, setYear, panel, setPanel, map, lcId } = useContext(Context) as GlobalContext;
+  const { year, setYear, panel, map, lcId, lcDisabled } = useContext(Context) as GlobalContext;
   const options = years
     .map((year) => new Object({ value: year, label: String(year) }))
     .reverse() as Options;
@@ -72,11 +72,13 @@ function View() {
         <input
           type='checkbox'
           checked={showRaster}
+          disabled={lcDisabled}
           onChange={(e) => setShowRaster(e.target.checked)}
         />
 
         <Select
           options={options}
+          disabled={lcDisabled}
           value={{ value: year, label: String(year) }}
           onChange={(value) => setYear(value.value)}
         />
