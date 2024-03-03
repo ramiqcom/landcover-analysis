@@ -6,9 +6,10 @@ import { GeoJSONSource, LngLatBoundsLike } from 'maplibre-gl';
 import { Dispatch, MutableRefObject, SetStateAction, useContext, useEffect, useState } from 'react';
 import { toWgs84 } from 'reproject';
 import shp from 'shpjs';
+import lc from '../data/lc.json';
 import { Context, GlobalContext, LCAnalyzeResponse } from '../module/global';
 import { setModal } from '../module/utils';
-import lc from '../data/lc.json';
+import ChartCanvas from './chart';
 
 /**
  * Analysis panel
@@ -26,9 +27,41 @@ export default function Analysis() {
     setModalText,
     setBounds,
     bounds,
+    data,
+    setData,
   } = useContext(Context) as GlobalContext;
 
   const [showVector, setShowVector] = useState(true);
+
+  // chart options
+  const options = {
+    scales: {
+      y: {
+        beginAtZero: true,
+        stacked: true,
+        title: {
+          display: true,
+          text: 'Land cover area change 1985 - 2020',
+        },
+      },
+      x: {
+        stacked: true,
+      },
+    },
+    layout: {
+      padding: {
+        left: 20,
+        right: 20,
+        top: 20,
+        bottom: 20,
+      },
+    },
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+    },
+  };
 
   // Allow to drop file to map
   useEffect(() => {
@@ -131,22 +164,19 @@ export default function Analysis() {
 
           if (!request.ok) {
             throw new Error(message);
-					}
+          }
 
-					// LC datasets
-					const { values, names, palette } = lc;
-
-          // List years
-          const years = [1985, 1990, 2000, 2005, 2010, 2015, 2020];
+          // LC datasets
+          const { values, names, palette } = lc;
 
           // Group the data based on lc values to make it into a datasets for chart
           const datasets = values.map((value, index) => {
             const yearData = data.map((arr) => {
               const filtered = arr.groups.filter((obj) => obj.lc == value);
               return filtered.length ? filtered[0].area : 0;
-						});
+            });
 
-						const group = {
+            const group = {
               data: yearData,
               backgroundColor: `#${palette[index]}80`,
               borderColor: `#${palette[index]}80`,
@@ -155,16 +185,25 @@ export default function Analysis() {
             };
 
             return group;
-					});
+          });
 
-					// Filtered data year
-					const filtered = datasets.filter((arr) => arr.data.reduce((x, y) => x + y));
+          // Filtered data year
+          const filtered = datasets.filter((arr) => arr.data.reduce((x, y) => x + y));
 
-					// C
+          // Years data
+          const years = [1985, 1990, 1995, 2000, 2005, 2010, 2015, 2020];
+
+          // Set data
+          setData({
+            labels: years,
+            datasets: filtered,
+          });
         }}
       >
         Analyze land cover change
       </button>
+
+      <ChartCanvas options={options} type='line' data={data} />
     </div>
   );
 }

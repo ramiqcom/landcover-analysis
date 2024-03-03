@@ -1,5 +1,6 @@
 'use client';
 
+import { Geometry } from '@turf/turf';
 import { GeoJSON } from 'geojson';
 import { Map } from 'maplibre-gl';
 import { Suspense, useRef, useState } from 'react';
@@ -7,7 +8,6 @@ import MapCanvas from './component/map';
 import Float from './component/panel';
 import basemaps from './data/basemap.json';
 import { Context, PanelID } from './module/global';
-import { Geometry } from '@turf/turf';
 
 /**
  * Main app component
@@ -44,6 +44,9 @@ export default function Home() {
   // LC select
   const [lcDisabled, setLcDisabled] = useState(true);
 
+  // Datasets
+  const [data, setData] = useState();
+
   // Modal ref
   const modalRef = useRef();
 
@@ -78,6 +81,8 @@ export default function Home() {
     setLcDisabled,
     bounds,
     setBounds,
+    data,
+    setData,
   };
 
   return (

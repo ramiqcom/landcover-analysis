@@ -1,4 +1,5 @@
 import { Geometry } from '@turf/turf';
+import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { GeoJSON } from 'geojson';
 import { Map } from 'maplibre-gl';
 import { Dispatch, MutableRefObject, SetStateAction, createContext } from 'react';
@@ -33,6 +34,8 @@ export type GlobalContext = {
   setLcDisabled: Dispatch<SetStateAction<boolean>>;
   bounds: Geometry;
   setBounds: Dispatch<SetStateAction<Geometry>>;
+  data: ChartData<keyof ChartTypeRegistry> | undefined;
+  setData: Dispatch<SetStateAction<ChartData<keyof ChartTypeRegistry>>>;
 };
 
 export type LCRequestBody = {
