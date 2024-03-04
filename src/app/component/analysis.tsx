@@ -41,8 +41,8 @@ export default function Analysis() {
         stacked: true,
         title: {
           display: true,
-          text: 'Land cover area change 1985 - 2020',
-        },
+          text: 'Land cover change 1985 - 2020',
+        }
       },
       x: {
         stacked: true,
@@ -58,7 +58,8 @@ export default function Analysis() {
     },
     plugins: {
       legend: {
-        position: 'top',
+        position: 'bottom',
+        align: 'start',
       },
     },
   };
