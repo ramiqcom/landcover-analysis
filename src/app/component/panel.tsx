@@ -48,12 +48,25 @@ function Panel() {
       <Analysis />
       <View />
 
-      <div style={{ fontSize: 'x-small' }}>Created by Ramadhan</div>
+      <div style={{ fontSize: 'x-small' }} className='flexible vertical small-gap'>
+        <div>Created by Ramadhan</div>
 
-      <div style={{ fontSize: 'x-small' }}>
-        Data source: Liangyun Liu, Xiao Zhang, & Tingting Zhao. (2023). GLC_FCS30D:
-        the first global 30-m land-cover dynamic monitoring product with fine classification system
-        from 1985 to 2022 [Data set]. Zenodo. https://doi.org/10.5281/zenodo.8239305
+        <div>
+          Data hosted in Google Earth Engine Community Catalog{' '}
+          <a
+            href='https://gee-community-catalog.org/'
+            target='_blank'
+            style={{ color: 'lightskyblue' }}
+          >
+            https://gee-community-catalog.org/
+          </a>
+        </div>
+
+        <div>
+          Data source: Liangyun Liu, Xiao Zhang, & Tingting Zhao. (2023). GLC_FCS30D: the first
+          global 30-m land-cover dynamic monitoring product with fine classification system from
+          1985 to 2022 [Data set]. Zenodo. https://doi.org/10.5281/zenodo.8239305
+        </div>
       </div>
     </div>
   );
