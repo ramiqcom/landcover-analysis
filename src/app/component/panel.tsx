@@ -49,7 +49,26 @@ function Panel() {
       <View />
 
       <div style={{ fontSize: 'x-small' }} className='flexible vertical small-gap'>
-        <div>Created by Ramadhan</div>
+        <div>
+          Created by Ramadhan{' '}
+          <a href='mailto:ramiqcom@gmail.com' target='_blank' style={{ color: 'lightskyblue' }}>
+            Email
+          </a>{' '}
+          <a
+            href='https://linkedin.com/in/ramiqcom'
+            target='_blank'
+            style={{ color: 'lightskyblue' }}
+          >
+            LinkedIn
+          </a>{' '}
+          <a
+            href='https://www.researchgate.net/profile/Ramadhan_Ramadhan7'
+            target='_blank'
+            style={{ color: 'lightskyblue' }}
+          >
+            ResearchGate
+          </a>
+        </div>
 
         <div>
           Data hosted in Google Earth Engine Community Catalog{' '}
