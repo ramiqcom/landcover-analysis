@@ -40,6 +40,8 @@ export default function Analysis() {
 
   const [loadingText, setLoadingText] = useState<string | null>(null);
 
+  const [downloadLink, setDownloadLink] = useState('');
+
   // chart options
   const options = {
     scales: {
@@ -209,6 +211,21 @@ export default function Analysis() {
             datasets: filtered,
           });
 
+          // Set array only for csv
+          const dataOnly = filtered.map((group) => {
+            const label = group.label;
+            const value = group.data;
+            return [label, ...value];
+          });
+          dataOnly.unshift(['Land cover', ...years]);
+
+          // Create string from the data
+          const strings = dataOnly.map((arr) => arr.join(', ')).join('\n');
+
+          // Create link for download
+          const link = encodeURI(`data:text/csv;charset=utf-8,${strings}`);
+          setDownloadLink(link);
+
           // Make button enbaled
           setAnalysisButtonDisabled(true);
           setChartShow(true);
@@ -218,12 +235,13 @@ export default function Analysis() {
         Analyze land cover change
       </button>
 
-      <div style={{ textAlign: 'center' }}>
-        {loadingText}
-      </div>
+      <div style={{ textAlign: 'center' }}>{loadingText}</div>
 
       <div style={{ display: chartShow ? 'inline' : 'none' }}>
         <ChartCanvas options={options} type='line' data={data} />
+        <a style={{ width: '100%' }} href={downloadLink} target='_blank' download={'landcover_change_1985_2020_Ha'}>
+          <button style={{ width: '100%' }}>Download data</button>
+        </a>
       </div>
     </div>
   );
