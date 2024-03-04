@@ -51,7 +51,7 @@ function Panel() {
       <div style={{ fontSize: 'x-small' }}>Created by Ramadhan</div>
 
       <div style={{ fontSize: 'x-small' }}>
-        Data source: Liangyun Liu, Xiao Zhang, & Tingting Zhao for their data. (2023). GLC_FCS30D:
+        Data source: Liangyun Liu, Xiao Zhang, & Tingting Zhao. (2023). GLC_FCS30D:
         the first global 30-m land-cover dynamic monitoring product with fine classification system
         from 1985 to 2022 [Data set]. Zenodo. https://doi.org/10.5281/zenodo.8239305
       </div>
