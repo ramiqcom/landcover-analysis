@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 import collection from '../../data/collection.json';
 import { LCAnalyzeBody } from '../../module/global';
 import { authenticate, evaluate } from '../../server/ee-server';
+import years from '../../data/year.json';
 
 export async function POST(req: Request) {
   try {
@@ -19,9 +20,6 @@ export async function POST(req: Request) {
 
     // Also turn bbox to ee object
     const geometry: ee.Geometry = ee.Geometry(bounds);
-
-    // List of years
-    let years = [1985, 1990, 2000, 2005, 2010, 2015, 2020];
 
     // Area image
     const area = ee.Image.pixelArea().divide(1e4);

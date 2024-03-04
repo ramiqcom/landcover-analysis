@@ -28,7 +28,7 @@ export default function ChartCanvas({ type, options, data }: ChartProp) {
 
   return (
     <div>
-      <canvas id={chartId} height={1000} width={1000}></canvas>
+      <canvas id={chartId} height={'100%'} width={'100%'}></canvas>
     </div>
   );
 }

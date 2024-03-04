@@ -7,6 +7,7 @@ import { Dispatch, MutableRefObject, SetStateAction, useContext, useEffect, useS
 import { toWgs84 } from 'reproject';
 import shp from 'shpjs';
 import lc from '../data/lc.json';
+import years from '../data/year.json';
 import { Context, GlobalContext, LCAnalyzeResponse } from '../module/global';
 import { setModal } from '../module/utils';
 import ChartCanvas from './chart';
@@ -33,6 +34,12 @@ export default function Analysis() {
 
   const [showVector, setShowVector] = useState(true);
 
+  const [analysisButtonDisabled, setAnalysisButtonDisabled] = useState(true);
+
+  const [chartShow, setChartShow] = useState(false);
+
+  const [loadingText, setLoadingText] = useState<string | null>(null);
+
   // chart options
   const options = {
     scales: {
@@ -41,8 +48,8 @@ export default function Analysis() {
         stacked: true,
         title: {
           display: true,
-          text: 'Land cover change 1985 - 2020',
-        }
+          text: 'Area (Ha)',
+        },
       },
       x: {
         stacked: true,
@@ -147,8 +154,13 @@ export default function Analysis() {
       </div>
 
       <button
-        disabled={geojson ? false : true}
-        onClick={async () => {
+        disabled={geojson && analysisButtonDisabled ? false : true}
+        onClick={async (e) => {
+          // Make button disabled
+          setAnalysisButtonDisabled(false);
+          setChartShow(false);
+          setLoadingText('Generating chart...');
+
           // Flatten the polygon
           const polygon = flatten(geojson as FeatureCollection);
           const dissolved = dissolve(polygon);
@@ -191,20 +203,28 @@ export default function Analysis() {
           // Filtered data year
           const filtered = datasets.filter((arr) => arr.data.reduce((x, y) => x + y));
 
-          // Years data
-          const years = [1985, 1990, 1995, 2000, 2005, 2010, 2015, 2020];
-
           // Set data
           setData({
             labels: years,
             datasets: filtered,
           });
+
+          // Make button enbaled
+          setAnalysisButtonDisabled(true);
+          setChartShow(true);
+          setLoadingText(null);
         }}
       >
         Analyze land cover change
       </button>
 
-      <ChartCanvas options={options} type='line' data={data} />
+      <div style={{ textAlign: 'center' }}>
+        {loadingText}
+      </div>
+
+      <div style={{ display: chartShow ? 'inline' : 'none' }}>
+        <ChartCanvas options={options} type='line' data={data} />
+      </div>
     </div>
   );
 }
