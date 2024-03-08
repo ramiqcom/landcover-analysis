@@ -239,7 +239,12 @@ export default function Analysis() {
 
       <div style={{ display: chartShow ? 'inline' : 'none' }}>
         <ChartCanvas options={options} type='line' data={data} />
-        <a style={{ width: '100%' }} href={downloadLink} target='_blank' download={'landcover_change_1985_2020_Ha'}>
+        <a
+          style={{ width: '100%' }}
+          href={downloadLink}
+          target='_blank'
+          download={'landcover_change_1985_2020_Ha'}
+        >
           <button style={{ width: '100%' }}>Download data</button>
         </a>
       </div>
@@ -271,8 +276,7 @@ async function loadGeojson(
       case 'geojson':
       case 'json': {
         const parsed = JSON.parse(await file.text());
-        const reprojected = toWgs84(parsed, undefined, epsg);
-        geojson = reprojected;
+        geojson = parsed;
         break;
       }
       case 'zip': {
@@ -290,6 +294,11 @@ async function loadGeojson(
         throw new Error(`Format ${format} is not supported`);
       }
     }
+
+    // Reproject if possible
+    try {
+      geojson = toWgs84(geojson, undefined, epsg);
+    } catch (err) {}
 
     // Check geojson area
     const areaGeojson = area(geojson as FeatureCollection) / 1e6;
