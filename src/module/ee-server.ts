@@ -1,5 +1,7 @@
+import 'node-self';
+
 import ee from '@google/earthengine';
-import { MapId, VisObject } from '../module/global';
+import { MapId, VisObject } from './global';
 
 /**
  * Function to authenticate EE

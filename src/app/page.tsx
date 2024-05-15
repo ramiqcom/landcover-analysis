@@ -1,114 +1,37 @@
-'use client';
-
-import { Geometry } from '@turf/turf';
-import { GeoJSON } from 'geojson';
-import { Map } from 'maplibre-gl';
-import { Suspense, useRef, useState } from 'react';
-import MapCanvas from './component/map';
-import Float from './component/panel';
-import basemaps from './data/basemap.json';
-import { Context, PanelID } from './module/global';
+import Main from '../component/main';
+import basemaps from '../data/basemap.json';
+import lc from '../data/lc.json';
+import yearsList from '../data/year.json';
+import { lulcLayer } from '../module/ee';
+import { Option, Options } from '../module/global';
 
 /**
- * Main app component
+ * Main server app component
  * @returns
  */
-export default function Home() {
-  // Basemap of choice
-  const [basemap, setBasemap] = useState(basemaps[0]);
+export default async function Home() {
+  const basemap = basemaps[0];
+  const years: Options = yearsList
+    .map((year) => new Object({ label: String(year), value: year }) as Option)
+    .reverse();
+  const year = years[0];
 
-  // Map object
-  const [map, setMap] = useState<Map>();
+  const tiles = {};
+  const tile = await lulcLayer(year.value);
+  tiles[year.value] = tile;
 
-  // Tile list
-  const [tiles, setTiles] = useState<Record<string, string>>({});
-
-  // Tile
-  const [tile, setTile] = useState<string | undefined>();
-
-  // Year
-  const [year, setYear] = useState<number>(2022);
-
-  // Land cover panel
-  const [panel, setPanel] = useState<PanelID>('landcover');
-
-  // Geojson
-  const [geojson, setGeojson] = useState<GeoJSON>();
-
-  // Geojson geometries/bound
-  const [bounds, setBounds] = useState<Geometry>();
-
-  // Modal
-  const [modalText, setModalText] = useState('');
-
-  // LC select
-  const [lcDisabled, setLcDisabled] = useState(true);
-
-  // Datasets
-  const [data, setData] = useState();
-
-  // Modal ref
-  const modalRef = useRef();
-
-  // Lc id name
-  const lcId: string = 'LC';
-
-  // Vector id
-  const vectorId: string = 'vector';
-
-  // Context of all states
-  const contextDict = {
+  const defaultStates = {
     basemap,
-    setBasemap,
-    map,
-    setMap,
-    tiles,
-    setTiles,
+    basemaps,
     year,
-    setYear,
-    tile,
-    setTile,
-    panel,
-    setPanel,
-    geojson,
-    setGeojson,
-    lcId,
-    vectorId,
-    modalText,
-    setModalText,
-    modalRef,
-    lcDisabled,
-    setLcDisabled,
-    bounds,
-    setBounds,
-    data,
-    setData,
+    years,
+    lc,
+    tiles,
   };
 
   return (
     <>
-      <Context.Provider value={contextDict}>
-        <dialog id='modal' ref={modalRef}>
-          {modalText}
-        </dialog>
-        <Float />
-        <Suspense fallback={<Loading />}>
-          <MapCanvas />
-        </Suspense>
-      </Context.Provider>
+      <Main defaultStates={defaultStates} />
     </>
-  );
-}
-
-/**
- * Showing loading component
- * Loading component
- * @returns
- */
-function Loading() {
-  return (
-    <div id='loading' className='flexible center1 center2'>
-      Loading...
-    </div>
   );
 }

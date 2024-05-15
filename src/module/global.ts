@@ -2,7 +2,7 @@ import { Geometry } from '@turf/turf';
 import { ChartData, ChartTypeRegistry } from 'chart.js';
 import { GeoJSON } from 'geojson';
 import { Map } from 'maplibre-gl';
-import { Dispatch, MutableRefObject, SetStateAction, createContext } from 'react';
+import { Dispatch, SetStateAction, createContext } from 'react';
 
 export type Option = { label: string; value: any };
 
@@ -10,32 +10,35 @@ export type PanelID = 'landcover' | 'analysis';
 
 export type Options = Array<Option>;
 
+export type SetState<T> = Dispatch<SetStateAction<T>>;
+
 export type GlobalContext = {
   basemap: Option;
-  setBasemap: Dispatch<SetStateAction<Option>>;
+  setBasemap: SetState<Option>;
   map: Map | undefined;
-  setMap: Dispatch<SetStateAction<Map | undefined>>;
+  setMap: SetState<Map>;
   tiles: Record<string, string>;
-  setTiles: Dispatch<SetStateAction<Record<string, string>>>;
+  setTiles: SetState<Record<string, string>>;
   tile: string;
-  setTile: Dispatch<SetStateAction<string>>;
-  year: number;
-  setYear: Dispatch<SetStateAction<number>>;
+  setTile: SetState<string>;
+  showTile: boolean;
+  setShowTile: SetState<boolean>;
+  year: Option;
+  setYear: SetState<Option>;
   panel: PanelID;
-  setPanel: Dispatch<SetStateAction<PanelID>>;
+  setPanel: SetState<PanelID>;
   geojson: GeoJSON;
-  setGeojson: Dispatch<SetStateAction<GeoJSON>>;
-  lcId: string;
-  vectorId: string;
-  modalText: string;
-  setModalText: Dispatch<SetStateAction<string>>;
-  modalRef: MutableRefObject<any>;
-  lcDisabled: boolean;
-  setLcDisabled: Dispatch<SetStateAction<boolean>>;
+  setGeojson: SetState<GeoJSON>;
   bounds: Geometry;
-  setBounds: Dispatch<SetStateAction<Geometry>>;
-  data: ChartData<keyof ChartTypeRegistry> | undefined;
-  setData: Dispatch<SetStateAction<ChartData<keyof ChartTypeRegistry>>>;
+  setBounds: SetState<Geometry>;
+  data: ChartData<keyof ChartTypeRegistry>;
+  setData: SetState<ChartData<keyof ChartTypeRegistry>>;
+  lc: Record<string, any[]>;
+  years: Options;
+  showVector: boolean;
+  setShowVector: SetState<boolean>;
+  status: string;
+  setStatus: SetState<string>;
 };
 
 export type LCRequestBody = {
@@ -70,4 +73,4 @@ export type MapId = {
   image: Object;
 };
 
-export const Context = createContext<GlobalContext | {}>({});
+export const Context = createContext<GlobalContext | undefined>(undefined);

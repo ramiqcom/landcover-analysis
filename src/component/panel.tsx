@@ -1,7 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
-import lc from '../data/lc.json';
-import years from '../data/year.json';
-import { Context, GlobalContext, Options } from '../module/global';
+import { useContext, useState } from 'react';
+import { Context, LCResponseBody } from '../module/global';
 import Analysis from './analysis';
 import { Select } from './input';
 
@@ -22,7 +20,7 @@ export default function Float() {
  * @returns
  */
 function Panel() {
-  const { panel, setPanel } = useContext(Context) as GlobalContext;
+  const { panel, setPanel, status } = useContext(Context);
 
   return (
     <div className='flexible vertical float-panel gap'>
@@ -47,6 +45,8 @@ function Panel() {
 
       <Analysis />
       <View />
+
+      <div style={{ textAlign: 'center', fontSize: 'small' }}>{status}</div>
 
       <div style={{ fontSize: 'x-small' }} className='flexible vertical small-gap'>
         <div>
@@ -92,35 +92,88 @@ function Panel() {
 }
 
 function View() {
-  const { year, setYear, panel, map, lcId, lcDisabled } = useContext(Context) as GlobalContext;
-  const options = years
-    .map((year) => new Object({ value: year, label: String(year) }))
-    .reverse() as Options;
+  const {
+    year,
+    setYear,
+    panel,
+    showTile,
+    setShowTile,
+    years,
+    tiles,
+    setTiles,
+    setTile,
+    setStatus,
+  } = useContext(Context);
 
-  const [showRaster, setShowRaster] = useState(true);
-
-  // Show and hide raster layer
-  useEffect(() => {
-    if (map && map.getSource(lcId)) {
-      map.setLayoutProperty(lcId, 'visibility', showRaster ? 'visible' : 'none');
-    }
-  }, [showRaster]);
+  const [lcDisabled, setLCDisabled] = useState(false);
 
   return (
     <div className='flexible vertical' style={{ display: panel == 'landcover' ? 'flex' : 'none' }}>
       <div className='flexible small-gap'>
         <input
           type='checkbox'
-          checked={showRaster}
+          checked={showTile}
           disabled={lcDisabled}
-          onChange={(e) => setShowRaster(e.target.checked)}
+          onChange={(e) => setShowTile(e.target.checked)}
         />
 
         <Select
-          options={options}
+          options={years}
           disabled={lcDisabled}
-          value={{ value: year, label: String(year) }}
-          onChange={(value) => setYear(value.value)}
+          value={year}
+          onChange={async (value) => {
+            try {
+              setYear(value);
+
+              // Show image generating status
+              setStatus('Generating image...');
+
+              // disabled button for a while
+              setLCDisabled(true);
+
+              let tile: string;
+
+              if (!tiles[value.value]) {
+                const response = await fetch('/lc', {
+                  body: JSON.stringify({ year: value.value }),
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                });
+                const { url, message }: LCResponseBody = await response.json();
+
+                if (!response.ok) {
+                  throw new Error(message);
+                }
+
+                tile = url;
+
+                // Add fetched tile to tiles collection
+                const newTiles = tiles;
+                newTiles[value.value] = tile;
+                setTiles(newTiles);
+
+                // Set the main tile
+                setTile(tile);
+              } else {
+                // Get tile from collection
+                tile = tiles[value.value];
+
+                // Set the main tile
+                setTile(tile);
+              }
+
+              // Show image generating status
+              setStatus('Success');
+            } catch ({ message }) {
+              // Show image generating status
+              setStatus(message);
+            } finally {
+              // Enable button again
+              setLCDisabled(false);
+            }
+          }}
         />
       </div>
 
@@ -130,6 +183,8 @@ function View() {
 }
 
 function Legend() {
+  const { lc } = useContext(Context);
+
   // Label and palette of the land cover
   const { names, palette } = lc;
 
