@@ -1,18 +1,6 @@
 [
   {
-    "label": "Google Hybrid",
-    "value": "https://raw.githubusercontent.com/ramiqcom/map-style/master/google-hybrid.json"
-  },
-  {
-    "label": "Google Road",
-    "value": "https://raw.githubusercontent.com/ramiqcom/map-style/master/google-road.json"
-  },
-  {
-    "label": "Google Satellite",
-    "value": "https://raw.githubusercontent.com/ramiqcom/map-style/master/google-satellite.json"
-  },
-  {
-    "label": "Google Terrain",
-    "value": "https://raw.githubusercontent.com/ramiqcom/map-style/master/google-terrain.json"
+    "label": "MapLibre Demo Tiles",
+    "value": "https://demotiles.maplibre.org/style.json"
   }
 ]
