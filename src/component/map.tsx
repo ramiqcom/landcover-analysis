@@ -30,6 +30,8 @@ export default function MapCanvas() {
     const map = new Map({
       container: mapId,
       zoom: 4,
+      minZoom: 2,
+      maxZoom: 22,
       center: [130, 0],
       style: basemap.value,
     });

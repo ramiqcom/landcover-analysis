@@ -1,8 +1,18 @@
 [
-	{ "label": "MapLibre", "value": "https://demotiles.maplibre.org/style.json" },
-	{ "label": "Alidade Smooth Dark", "value": "https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json" },
-	{ "label": "Alidade Smooth", "value": "https://tiles.stadiamaps.com/styles/alidade_smooth.json" },
-	{ "label": "Alidade Satellite", "value": "https://tiles.stadiamaps.com/styles/alidade_satellite.json" },
-	{ "label": "Stadia Outdoors", "value": "https://tiles.stadiamaps.com/styles/outdoors.json" },
-	{ "label": "OSM Bright", "value": "https://tiles.stadiamaps.com/styles/osm_bright.json" }
+  {
+    "label": "Google Hybrid",
+    "value": "https://raw.githubusercontent.com/ramiqcom/map-style/master/google-hybrid.json"
+  },
+  {
+    "label": "Google Road",
+    "value": "https://raw.githubusercontent.com/ramiqcom/map-style/master/google-road.json"
+  },
+  {
+    "label": "Google Satellite",
+    "value": "https://raw.githubusercontent.com/ramiqcom/map-style/master/google-satellite.json"
+  },
+  {
+    "label": "Google Terrain",
+    "value": "https://raw.githubusercontent.com/ramiqcom/map-style/master/google-terrain.json"
+  }
 ]
