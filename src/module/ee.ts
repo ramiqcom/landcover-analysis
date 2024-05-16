@@ -1,3 +1,5 @@
+'use server';
+
 import 'node-self';
 
 import ee from '@google/earthengine';
@@ -7,7 +9,7 @@ import years from '../data/year.json';
 import { authenticate, evaluate, getMapId } from './ee-server';
 import { LCAnalyzeBody } from './global';
 
-export async function lulcLayer(year: number) {
+export async function lulcLayer({ year }: { year: number }) {
   if (
     year < 1985 ||
     year > 2022 ||
@@ -47,10 +49,10 @@ export async function lulcLayer(year: number) {
   // Get image url
   const { urlFormat } = await getMapId(visualized, {});
 
-  return urlFormat;
+  return { urlFormat };
 }
 
-export async function analysisLulc({ geojson, bounds }: LCAnalyzeBody): Promise<number[][]> {
+export async function analysisLulc({ geojson, bounds }: LCAnalyzeBody) {
   // Authenticate earth engine
   await authenticate();
 
@@ -92,5 +94,5 @@ export async function analysisLulc({ geojson, bounds }: LCAnalyzeBody): Promise<
   // Evaluated value
   const data = await evaluate(areas);
 
-  return data;
+  return { data };
 }

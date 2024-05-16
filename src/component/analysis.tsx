@@ -5,7 +5,8 @@ import { GeoJSON } from 'geojson';
 import { useContext, useEffect, useState } from 'react';
 import { toWgs84 } from 'reproject';
 import shp from 'shpjs';
-import { Context, LCAnalyzeResponse } from '../module/global';
+import { analysisLulc } from '../module/ee';
+import { Context } from '../module/global';
 import ChartCanvas from './chart';
 
 /**
@@ -130,19 +131,7 @@ export default function Analysis() {
             const polygon = flatten(geojson as FeatureCollection);
             const dissolved = dissolve(polygon);
 
-            const request = await fetch('/analyze', {
-              method: 'POST',
-              body: JSON.stringify({ geojson: dissolved, bounds }),
-              headers: {
-                'Content-type': 'application/json',
-              },
-            });
-
-            const { data, message }: LCAnalyzeResponse = await request.json();
-
-            if (!request.ok) {
-              throw new Error(message);
-            }
+            const { data } = await analysisLulc({ geojson: dissolved, bounds });
 
             // LC datasets
             const { values, names, palette } = lc;

@@ -17,8 +17,8 @@ export default async function Home() {
   const year = years[0];
 
   const tiles = {};
-  const tile = await lulcLayer(year.value);
-  tiles[year.value] = tile;
+  const { urlFormat } = await lulcLayer({ year: year.value });
+  tiles[year.value] = urlFormat;
 
   const defaultStates = {
     basemap,

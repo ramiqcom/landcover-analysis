@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
-import { Context, LCResponseBody } from '../module/global';
+import { lulcLayer } from '../module/ee';
+import { Context } from '../module/global';
 import Analysis from './analysis';
 import { Select } from './input';
 
@@ -134,20 +135,9 @@ function View() {
               let tile: string;
 
               if (!tiles[value.value]) {
-                const response = await fetch('/lc', {
-                  body: JSON.stringify({ year: value.value }),
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                });
-                const { url, message }: LCResponseBody = await response.json();
-
-                if (!response.ok) {
-                  throw new Error(message);
-                }
-
-                tile = url;
+                // Generate lulc layer
+                const { urlFormat } = await lulcLayer({ year: value.value });
+                tile = urlFormat;
 
                 // Add fetched tile to tiles collection
                 const newTiles = tiles;
