@@ -179,11 +179,12 @@ export default function Analysis() {
             setDownloadLink(link);
 
             // Make button enbaled
-            setAnalysisButtonDisabled(true);
             setChartShow(true);
             setStatus('Success');
           } catch ({ message }) {
             setStatus(message);
+          } finally {
+            setAnalysisButtonDisabled(true);
           }
         }}
       >
