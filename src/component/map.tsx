@@ -2,6 +2,7 @@ import { bbox, bboxPolygon } from '@turf/turf';
 import { GeoJSONSource, LngLatBoundsLike, Map, RasterTileSource } from 'maplibre-gl';
 import { useContext, useEffect, useState } from 'react';
 import '../../node_modules/maplibre-gl/dist/maplibre-gl.css';
+import { lulcLayer } from '../module/ee';
 import { Context } from '../module/global';
 
 /**
@@ -10,8 +11,19 @@ import { Context } from '../module/global';
  */
 export default function MapCanvas() {
   // States from context
-  const { basemap, map, setMap, tile, showTile, geojson, showVector, setBounds } =
-    useContext(Context);
+  const {
+    basemap,
+    map,
+    setMap,
+    tile,
+    showTile,
+    geojson,
+    showVector,
+    setBounds,
+    year,
+    setTiles,
+    setTile,
+  } = useContext(Context);
 
   // Name of div id as map canvas
   const mapId = 'map';
@@ -23,6 +35,17 @@ export default function MapCanvas() {
   const vectorId = 'vector';
 
   const [mapLoaded, setMapLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadLayer() {
+      const tiles = {};
+      const { urlFormat } = await lulcLayer({ year: year.value });
+      tiles[year.value] = urlFormat;
+      setTiles(tiles);
+      setTile(urlFormat);
+    }
+    loadLayer();
+  }, []);
 
   // When html is rendered load map
   useEffect(() => {

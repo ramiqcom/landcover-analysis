@@ -7,34 +7,31 @@ import { Map } from 'maplibre-gl';
 import { useState } from 'react';
 import MapCanvas from '../component/map';
 import Float from '../component/panel';
-import { Context, Option, Options, PanelID } from '../module/global';
+import basemaps from '../data/basemap.json';
+import lc from '../data/lc.json';
+import yearsList from '../data/year.json';
+import { Context, Option, PanelID } from '../module/global';
 
-export default function Main({
-  defaultStates,
-}: {
-  defaultStates: {
-    basemap: Option;
-    basemaps: Options;
-    year: Option;
-    years: Options;
-    lc: Record<string, any[]>;
-    tiles: Record<string, any>;
-  };
-}) {
+export default function Main() {
   // Basemap of choice
-  const [basemap, setBasemap] = useState(defaultStates.basemap);
+  const [basemap, setBasemap] = useState(basemaps[0]);
 
   // Map object
   const [map, setMap] = useState<Map>();
 
   // Tile list
-  const [tiles, setTiles] = useState(defaultStates.tiles);
+  const [tiles, setTiles] = useState<Record<string, string>>({});
+
+  // Year list
+  const years = yearsList
+    .map((year) => new Object({ label: String(year), value: year }) as Option)
+    .reverse();
 
   // Year
-  const [year, setYear] = useState(defaultStates.year);
+  const [year, setYear] = useState(years[0]);
 
   // Tile
-  const [tile, setTile] = useState(tiles[year.value]);
+  const [tile, setTile] = useState<string>();
 
   // Show tile
   const [showTile, setShowTile] = useState(true);
@@ -81,8 +78,8 @@ export default function Main({
     setShowTile,
     showVector,
     setShowVector,
-    lc: defaultStates.lc,
-    years: defaultStates.years,
+    lc,
+    years,
     status,
     setStatus,
   };
